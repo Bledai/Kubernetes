@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: docker-sock
+  labels:
+    app: docker-custom
+spec:
+  containers:
+  - name: docker-custom 
+    image: hbledai/nginx_docker:1
+    volumeMounts:
+    - name: docker-sock
+      mountPath: /var/run/docker.sock
+  volumes:
+  - name: docker-sock
+    hostPath: 
+      path: /var/run/docker.sock

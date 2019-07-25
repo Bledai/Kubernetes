@@ -1,0 +1,43 @@
+- block:
+  - name: install deltarpm
+    yum:
+      name: deltarpm
+      state: latest
+  - name: upgrade all packages
+    yum:
+      name: '*'
+      state: latest
+  - name: install epel and other tools
+    yum:
+      name: 
+      - epel-release
+      - wget
+      - ntp
+      - jq
+      - net-tools
+      - bind-utils
+      - moreutils
+      - git
+      - bash-completion
+      state: latest
+  - name: start ntpd
+    service:
+      name: ntpd
+      enabled: yes
+      state: started
+  - name: Disable SELinux
+    selinux:
+      state: disabled
+    register: seLinux_Disable  
+  - name: disable swap
+    shell: |
+      sed -i '/swap/d' /etc/fstab
+    #when: seLinux_Disable.changed
+
+  - name: swapoff
+    shell: |
+      swapoff --all
+    #when: seLinux_Disable.changed
+
+
+  become: yes

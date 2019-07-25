@@ -1,0 +1,40 @@
+- hosts: all
+  pre_tasks:
+    - setup:
+      tags: always
+  roles:
+    - role: baseConfig
+
+    - role: k8sBase
+      ip: "{{ ansible_eth1.ipv4.address }}"
+
+- hosts: master
+  vars:
+    home: "/home/student/BLEDAI/Kubernetes/Ansible/files/"
+  roles:
+    - role: clusterInitialization
+      ip: "{{ ansible_eth1.ipv4.address }}"
+      vagrant: true
+
+    - role: podNetwork
+      source: https://raw.githubusercontent.com/coreos/flannel/62e44c867a2846fefb68bd5f178daf4da3095ccb/Documentation/kube-flannel.yml
+      type: flannel
+      user: root
+      vagrant: yes
+
+    - role: metalLB
+
+    - role: nginxIngress
+     
+    - role: dashboardInit
+      source_files: "/home/student/BLEDAI/Kubernetes/Ansible/files/dashboard/*.yml"
+      source_url: "https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml"
+      tags: dashboard
+- import_playbook: metrica.yml
+  tags: metrica
+#- hosts: worker
+#  roles:
+ #   - role: joinNode
+
+
+

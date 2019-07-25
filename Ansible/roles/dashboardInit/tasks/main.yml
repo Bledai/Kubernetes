@@ -1,0 +1,47 @@
+---
+# tasks file for dashboardInit
+- block:
+  - file:
+      path: /tmp/dashboard
+      state: directory
+  - copy:
+      src: "{{ item }}"
+      dest: /tmp/dashboard
+      owner: "{{user}}"
+      group: "{{user}}"
+    register: files 
+    with_fileglob: "{{ source_files }}"
+  - name: dashboardInit
+    shell: |
+      kubectl apply -f "{{ item.dest }}"
+    with_items: "{{ files.results }}"
+  become: yes
+  become_user: "{{ user }}"
+  when: source_files != '' and source_url == ''
+
+- block:
+  - file:
+      path: /tmp/dashboard
+      state: directory
+  - copy:
+      src: "{{ item }}"
+      dest: /tmp/dashboard
+      owner: "{{user}}"
+      group: "{{user}}"
+    register: files 
+    with_fileglob: "{{ source_files }}"
+
+  - debug: var=files.results
+
+  - name: dashboardInit_files
+    shell: |
+      kubectl apply -f "{{ item.dest }}"
+    with_items:
+      - "{{ files.results }}"
+
+  - name: dashboardInit_url
+    shell: |
+      kubectl apply -f "{{ source_url }}"
+  become: yes
+  become_user: "{{ user }}"
+  when: source_url != ''

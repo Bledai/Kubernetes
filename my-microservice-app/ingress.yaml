@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: myflask-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+
+spec:
+  rules:
+  - host: my-application.k8s.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: myflask-svc
+          servicePort: flask-svc-port
+      - path: /author
+        backend:
+          serviceName: mynginx-svc
+          servicePort: nginx-svc-port
+
+
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   annotations:
+#     nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+#     nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+#   name: external-auth-oauth2
+#   namespace: kube-system
+# spec:
+#   rules:
+#   - host: dashboard
+#     http:
+#       paths:
+#       - backend:
+#           serviceName: kubernetes-dashboard
+#           servicePort: dashboard-port
+#         path: /
+
+# ---
+
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: oauth2-proxy
+#   namespace: kube-system
+# spec:
+#   rules:
+#   - host: dashboard
+#     http:
+#       paths:
+#       - backend:
+#           serviceName: oauth2-proxy
+#           servicePort: 4180
+#         path: /oauth2
+#   tls:
+#   - hosts:
+#     - dashboard
+#     secretName: nginx-ingress-serviceaccount-token-m557g
+

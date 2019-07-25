@@ -1,0 +1,14 @@
+---
+# tasks file for podNetwork
+- block:
+  - name: Installing a Pod podNetwork
+    shell: |
+      kubectl apply -f "{{ source }}"
+
+  - name: Configure flannel rot vagrant
+    shell: |
+      kubectl patch daemonsets kube-flannel-ds-amd64 -n kube-system --patch='{ "spec":{"template":{"spec":{"containers":[{"name": "kube-flannel","args":  ["--ip-masq","--kube-subnet-mgr","--iface=eth1"]}]}}}}' 
+    when: type == 'flannel' and vagrant == true
+  become: yes
+  become_user: "{{ user }}" 
+

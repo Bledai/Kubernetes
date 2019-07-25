@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-volume-emptydir
+spec:
+  initContainers:
+  - name: container-init
+    image: busybox
+    command: ["touch", "/share-dir/file-1/", "share-dir-memory/file-2"]
+    volumeMounts:
+    - name: pod-share-volume
+      mountPath: /share-dir
+    - name: pod-share-volume-memory
+      mountPath: /share-dir-memory
+  containers:
+  - name: container-1
+    image: busybox
+    command: ["sleep", "1000"]
+    volumeMounts:
+    - name: pod-share-volume
+      mountPath: /share-dir
+    - name: pod-share-volume-memory
+      mountPath: /share-dir-memory
+  - name: container-2
+    image: busybox
+    command: ["sleep", "1000"]
+    volumeMounts: 
+    - name: pod-share-volume
+      mountPath: /share-dir
+    - name: pod-share-volume-memory
+      mountPath: /share-dir-memory
+  volumes:
+  - name: pod-share-volume
+    emptyDir: {}
+  - name: pod-share-volume-memory
+    emptyDir: 
+      medium: Memory
+
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: pod-volume-hostpath
+# spec:
+#   containers:
+#   - name: container 
+#     image: sbeliakou/curl
+#     command: ["sleep", "1000"]
+#     volumeMounts:
+#     - name: docker-sock
+#       mountPath: /tmp/docker.sock
+#     - name: data-storage
+#       mountPath: /etc/app-date
+#   volumes:
+#   - name: docker-sock
+#     hostPath: 
+#       path: /var/run/docker.sock
+#   - name: data-storage
+#     hostPath:
+#       path: /etc/app-date
+
+

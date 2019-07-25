@@ -1,0 +1,10 @@
+---
+# tasks file for joinNode
+- shell: |
+    touch $HOME/join_node.txt
+    kubeadm join "{{ master_ip }}":"{{ port }}" --token "{{ token }}" --discovery-token-unsafe-skip-ca-verification
+  become: yes
+  args:
+    chdir: $HOME
+    creates: join_node.txt
+  become_user: "{{ user }}"

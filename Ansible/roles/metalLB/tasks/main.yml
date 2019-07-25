@@ -1,0 +1,25 @@
+---
+# tasks file for metalLB
+- block:
+  - name: apply manifest
+    shell: |
+      kubectl apply -f "{{ source }}"
+  - name: apply settings
+    shell: |
+      cat << EOF | kubectl apply -f -
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        namespace: metallb-system
+        name: config
+      data:
+        config: |
+          address-pools:
+          - name: default
+            protocol: layer2
+            addresses:
+            - "{{ ip_metalLB }}"
+      EOF
+  become: yes
+  become_user: "{{ user }}"
+  

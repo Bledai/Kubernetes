@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: myflask
+  name: myflask
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: myflask
+    spec:
+      containers:
+      - image: hbledai/myflask:1
+        name: myflask
+        ports:
+        - name: http-myflask
+          containerPort: 5000
+

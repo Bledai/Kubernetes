@@ -1,0 +1,24 @@
+- hosts: master
+  vars: 
+    user: root
+  become: yes
+  become_user: "{{ user }}"
+  tasks:
+    - copy: 
+        src: path_for_metrica.json
+        dest: /tmp/
+
+    - name: Clone git repo
+      git:
+        repo: https://github.com/kubernetes-incubator/metrics-server
+        dest: /tmp/metrics-server
+    - shell: |
+        kubectl create -f /tmp/metrics-server/deploy/1.8+/ && touch $HOME/metrics_deploy.txt
+      args:
+        chdir: $HOME
+        creates: $HOME/metrics_deploy.txt
+    - shell: |-
+        kubectl patch deployment/metrics-server -n kube-system --patch '{"spec":{"template":{"spec":{"containers":[{"name":"metrics-server","command":["/metrics-server","--kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname","--kubelet-insecure-tls"]}]}}}}' && touch $HOME/patch_metrics.txt
+      args:
+        chdir: $HOME
+        creates: $HOME/patch_metrica.txt

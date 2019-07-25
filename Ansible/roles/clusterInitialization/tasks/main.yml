@@ -1,0 +1,43 @@
+---
+# tasks file for clusterInitialization
+- block:
+  - name: Cluster init
+    shell: |
+      touch $HOME/metalLB.txt
+      kubeadm init  \
+      --pod-network-cidr  10.244.0.0/16 \
+      --apiserver-advertise-address "{{ ip }}" \
+      --token abcdef.0123456789abcdef     
+    args:
+      chdir: $HOME
+      creates: metalLB.txt
+      
+
+  - name: create folder
+    file:
+      path: $HOME/.kube
+      state: directory
+      owner: "{{ user }}"
+      group: "{{ user }}"
+
+  - name: copy config for Host PC 
+    copy:
+      src: /etc/kubernetes/admin.conf
+      dest: /vagrant/
+      force: yes
+      remote_src: yes
+
+  - name: copy config for root
+    copy:
+      src: /etc/kubernetes/admin.conf
+      dest: $HOME/.kube/config
+      owner: "{{ user}}"
+      group: "{{user}}"
+      force: yes
+      remote_src: yes
+
+  become: yes
+  become_user: "{{user}}"
+
+
+

@@ -1,0 +1,10 @@
+---
+- name: Install docker
+  include: docker_install.yml
+
+- name: OS Requirement
+  include: osRequirement.yml
+
+- name: Configure docker
+  include: configureDocker.yml
+# tasks file for baseConfig

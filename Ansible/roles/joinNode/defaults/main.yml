@@ -1,0 +1,6 @@
+---
+# defaults file for joinNode
+master_ip: 
+port: 6443
+token: 
+user: root

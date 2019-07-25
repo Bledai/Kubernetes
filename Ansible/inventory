@@ -1,0 +1,9 @@
+[master]
+192.168.56.225
+
+[worker]
+192.168.56.225
+
+[all:vars]
+master_ip=192.168.56.225
+token=abcdef.0123456789abcdef

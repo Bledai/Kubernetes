@@ -1,0 +1,29 @@
+---
+# tasks file for nginxIngress
+- block:
+  # - git:
+  #     repo: 'https://github.com/nginxinc/kubernetes-ingress.git'
+  #     dest: /tmp/kubernetes-ingress
+  #     version: v1.5.0
+  # - shell: |
+  #     kubectl apply -f /tmp/kubernetes-ingress/deployments/common/ns-and-sa.yaml
+  #     kubectl apply -f /tmp/kubernetes-ingress/deployments/common/default-server-secret.yaml
+  #     kubectl apply -f /tmp/kubernetes-ingress/deployments/common/nginx-config.yaml
+  #     kubectl apply -f /tmp/kubernetes-ingress/deployments/rbac/rbac.yaml
+  #     kubectl apply -f /tmp/kubernetes-ingress/deployments/deployment/nginx-ingress.yaml
+  #     kubectl apply -f /tmp/kubernetes-ingress/deployments/daemon-set/nginx-ingress.yaml
+  #     kubectl create -f /tmp/kubernetes-ingress/deployments/service/nodeport.yaml
+  #     kubectl patch svc nginx-ingress -n nginx-ingress --patch '{"spec":{"type":"LoadBalancer"}}'
+  #     touch $HOME/nginx.txt
+  #   args:
+  #     chdir: $HOME
+  #     creates: nginx.txt
+    - shell: |
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+    - shell: |
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml
+
+  become: yes
+  become_user: "{{ user }}"
+  tags: nginx
+

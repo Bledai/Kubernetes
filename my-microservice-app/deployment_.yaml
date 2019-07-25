@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: mynginx
+  name: mynginx
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mynginx
+    spec:
+      containers:
+      - image: hbledai/nginx_info:1
+        name: mynginx
+        ports:
+        - name: http-mynginx
+          containerPort: 80

@@ -1,0 +1,36 @@
+- block:
+  - name: create docker conf dir
+    file:
+      path: /etc/docker
+      state: directory
+
+  - name: create daemon json
+    copy:
+      content: |
+        {
+            "exec-opts": [
+                "native.cgroupdriver=systemd"
+            ]
+        }
+      dest: /etc/docker/daemon.json
+    register: result_daemon
+
+  - name: reload docker
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: docker
+    when: result_daemon.changed
+
+  - name: create docker conf iptables
+    copy:
+      content: |
+        net.bridge.bridge-nf-call-ip6tables = 1
+        net.bridge.bridge-nf-call-iptables = 1
+      dest: /etc/sysctl.d/docker.conf
+    register: result_iptables
+
+  - shell: sysctl --system
+    when: result_iptables.changed
+
+  become: yes
